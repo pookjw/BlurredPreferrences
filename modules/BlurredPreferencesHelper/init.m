@@ -35,7 +35,6 @@ static void custom_UIViewController_viewWillDisappear(UIViewController * self, S
 
 static void (*original_UITableView_setBackgroundColor)(UITableView *self, SEL selector, UIColor *backgroundColor);
 static void custom_UITableView_setBackgroundColor(UITableView *self, SEL selector, UIColor *backgroundColor) {
-    NSLog(@"%@, %@", self, backgroundColor);
     original_UITableView_setBackgroundColor(self, selector, UIColor.clearColor);
 }
 

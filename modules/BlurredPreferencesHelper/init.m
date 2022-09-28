@@ -59,7 +59,7 @@ __attribute__((constructor)) static void init() {
     LBHookMessage(UIViewController.class, @selector(viewWillAppear:), &custom_UIViewController_viewWillAppear, &original_UIViewController_viewWillAppear);
     LBHookMessage(UIViewController.class, @selector(viewWillDisappear:), &custom_UIViewController_viewWillDisappear, &original_UIViewController_viewWillDisappear);
     LBHookMessage(UITableView.class, @selector(setBackgroundColor:), &custom_UITableView_setBackgroundColor, &original_UITableView_setBackgroundColor);
-    LBHookMessage(UITableView.class, @selector(backgroundColor), &custom_UITableView_backgroundColor, &original_UITableView_backgroundColor);
+    // LBHookMessage(UITableView.class, @selector(backgroundColor), &custom_UITableView_backgroundColor, &original_UITableView_backgroundColor);
     LBHookMessage(UITableViewCell.class, @selector(setBackgroundColor:), &custom_UITableViewCell_setBackgroundColor, &original_UITableViewCell_setBackgroundColor);
     // LBHookMessage(UITableViewCell.class, @selector(backgroundColor), &custom_UITableViewCell_backgroundColor, &original_UITableViewCell_backgroundColor);
 }

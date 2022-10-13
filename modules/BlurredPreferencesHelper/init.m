@@ -5,8 +5,7 @@ static void (*original_UIViewController_viewDidLoad)(UIViewController *self, SEL
 static void custom_UIViewController_viewDidLoad(UIViewController * self, SEL selector) {
     original_UIViewController_viewDidLoad(self, selector);
     if ([self isKindOfClass:NSClassFromString(@"PSSplitViewController")]) {
-        // if I set clearColor or alpha value as 0.0f, touch event doesn't work correctly - why?
-        [self.view setBackgroundColor:[UIColor.blackColor colorWithAlphaComponent:0.001f]];
+        [self.view setBackgroundColor:[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f]];
     } else {
         [self.view setBackgroundColor:UIColor.clearColor];
     }

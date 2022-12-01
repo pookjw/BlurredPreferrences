@@ -1,9 +1,9 @@
 Package: com.pookjw.blurredpreferences
 Name: BlurredPreferences
-Version: 1.0
+Version: 1.1
 Architecture: iphoneos-arm
 Description: Hello World!
 Maintainer: Jinwoo Kim
 Author: Jinwoo Kim
 Section: Utilities
-Depends: firmware (>= 14.0), org.coolstar.libhooker
+Depends: firmware (>= 14.0), mobilesubstrate (>= 0.9.5000)

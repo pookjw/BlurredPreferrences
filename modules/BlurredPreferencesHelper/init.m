@@ -1,18 +1,27 @@
 #import <UIKit/UIKit.h>
-#import <libhooker/libhooker.h>
+#import <substrate.h>
 
-static void (*original_UIViewController_viewDidLoad)(UIViewController *self, SEL selector);
-static void custom_UIViewController_viewDidLoad(UIViewController * self, SEL selector) {
-    original_UIViewController_viewDidLoad(self, selector);
-    if ([self isKindOfClass:NSClassFromString(@"PSSplitViewController")]) {
-        [self.view setBackgroundColor:[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f]];
-    } else {
-        [self.view setBackgroundColor:UIColor.clearColor];
-    }
+@interface UIColor (BPH)
+@property (class, readonly, nonatomic) UIColor *bph_clearColor;
+@end
+
+@implementation UIColor (BPH)
+
++ (UIColor *)bph_clearColor {
+    // https://stackoverflow.com/a/11012121/17473716
+    return [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.001f];
 }
 
-static void (*original_UIViewController_viewWillAppear)(UIViewController *self, SEL selector, BOOL animated);
-static void custom_UIViewController_viewWillAppear(UIViewController * self, SEL selector, BOOL animated) {
+@end
+
+void (*original_UIViewController_viewDidLoad)(UIViewController *self, SEL selector);
+void custom_UIViewController_viewDidLoad(UIViewController * self, SEL selector) {
+    original_UIViewController_viewDidLoad(self, selector);
+    [self.view setBackgroundColor:UIColor.bph_clearColor];
+}
+
+void (*original_UIViewController_viewWillAppear)(UIViewController *self, SEL selector, BOOL animated);
+void custom_UIViewController_viewWillAppear(UIViewController * self, SEL selector, BOOL animated) {
     original_UIViewController_viewWillAppear(self, selector, animated);
     [self.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         [self.view setAlpha:1.0f];
@@ -21,8 +30,8 @@ static void custom_UIViewController_viewWillAppear(UIViewController * self, SEL 
     }];
 }
 
-static void (*original_UIViewController_viewWillDisappear)(UIViewController *self, SEL selector, BOOL animated);
-static void custom_UIViewController_viewWillDisappear(UIViewController * self, SEL selector, BOOL animated) {
+void (*original_UIViewController_viewWillDisappear)(UIViewController *self, SEL selector, BOOL animated);
+void custom_UIViewController_viewWillDisappear(UIViewController * self, SEL selector, BOOL animated) {
     original_UIViewController_viewWillDisappear(self, selector, animated);
    
     [self.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
@@ -32,34 +41,22 @@ static void custom_UIViewController_viewWillDisappear(UIViewController * self, S
     }];
 }
 
-static void (*original_UITableView_setBackgroundColor)(UITableView *self, SEL selector, UIColor *backgroundColor);
-static void custom_UITableView_setBackgroundColor(UITableView *self, SEL selector, UIColor *backgroundColor) {
-    original_UITableView_setBackgroundColor(self, selector, UIColor.clearColor);
+void (*original_UITableView_setBackgroundColor)(UITableView *self, SEL selector, UIColor *backgroundColor);
+void custom_UITableView_setBackgroundColor(UITableView *self, SEL selector, UIColor *backgroundColor) {
+    original_UITableView_setBackgroundColor(self, selector, UIColor.bph_clearColor);
 }
 
-static UIColor * (*original_UITableView_backgroundColor)(UITableView *self, SEL selector);
-static UIColor * custom_UITableView_backgroundColor(UITableView *self, SEL selector) {
-    return UIColor.clearColor;
-}
-
-static void (*original_UITableViewCell_setBackgroundColor)(UITableViewCell *self, SEL selector, UIColor *backgroundColor);
-static void custom_UITableViewCell_setBackgroundColor(UITableViewCell *self, SEL selector, UIColor *backgroundColor) {
+void (*original_UITableViewCell_setBackgroundColor)(UITableViewCell *self, SEL selector, UIColor *backgroundColor);
+void custom_UITableViewCell_setBackgroundColor(UITableViewCell *self, SEL selector, UIColor *backgroundColor) {
     original_UITableViewCell_setBackgroundColor(self, selector, [backgroundColor colorWithAlphaComponent:0.3f]);
-}
-
-static UIColor * (*original_UITableViewCell_backgroundColor)(UITableViewCell *self, SEL selector);
-static UIColor * custom_UITableViewCell_backgroundColor(UITableViewCell *self, SEL selector) {
-    return UIColor.clearColor;
 }
 
 __attribute__((constructor)) static void init() {
     @autoreleasepool {
-        LBHookMessage(UIViewController.class, @selector(viewDidLoad), &custom_UIViewController_viewDidLoad, &original_UIViewController_viewDidLoad);
-        LBHookMessage(UIViewController.class, @selector(viewWillAppear:), &custom_UIViewController_viewWillAppear, &original_UIViewController_viewWillAppear);
-        LBHookMessage(UIViewController.class, @selector(viewWillDisappear:), &custom_UIViewController_viewWillDisappear, &original_UIViewController_viewWillDisappear);
-        LBHookMessage(UITableView.class, @selector(setBackgroundColor:), &custom_UITableView_setBackgroundColor, &original_UITableView_setBackgroundColor);
-        // LBHookMessage(UITableView.class, @selector(backgroundColor), &custom_UITableView_backgroundColor, &original_UITableView_backgroundColor);
-        LBHookMessage(UITableViewCell.class, @selector(setBackgroundColor:), &custom_UITableViewCell_setBackgroundColor, &original_UITableViewCell_setBackgroundColor);
-        // LBHookMessage(UITableViewCell.class, @selector(backgroundColor), &custom_UITableViewCell_backgroundColor, &original_UITableViewCell_backgroundColor);
+        MSHookMessageEx(UIViewController.class, @selector(viewDidLoad), (IMP)&custom_UIViewController_viewDidLoad, (IMP *)&original_UIViewController_viewDidLoad);
+        MSHookMessageEx(UIViewController.class, @selector(viewWillAppear:), (IMP)&custom_UIViewController_viewWillAppear, (IMP *)&original_UIViewController_viewWillAppear);
+        MSHookMessageEx(UIViewController.class, @selector(viewWillDisappear:), (IMP)&custom_UIViewController_viewWillDisappear, (IMP *)&original_UIViewController_viewWillDisappear);
+        MSHookMessageEx(UITableView.class, @selector(setBackgroundColor:), (IMP)&custom_UITableView_setBackgroundColor, (IMP *)&original_UITableView_setBackgroundColor);
+        MSHookMessageEx(UITableViewCell.class, @selector(setBackgroundColor:), (IMP)&custom_UITableViewCell_setBackgroundColor, (IMP *)&original_UITableViewCell_setBackgroundColor);
     }
 }

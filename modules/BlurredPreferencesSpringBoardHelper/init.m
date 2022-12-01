@@ -1,38 +1,20 @@
-#import <Foundation/Foundation.h>
-#import <libhooker/libhooker.h>
+#import <UIKit/UIKit.h>
+#import <substrate.h>
 #import <SpringBoard/SBApplicationInfo.h>
 
 static NSString * const preferencesBundleIdentifier = @"com.apple.Preferences";
 
-static NSUInteger (*original_SBApplicationInfo_backgroundStyle)(SBApplicationInfo *self, SEL selector);
-static NSUInteger custom_SBApplicationInfo_backgroundStyle(SBApplicationInfo *self, SEL selector) {
+long (*original_SBApplicationInfo_backgroundStyleForRequestedBackgroundStyle)(SBApplicationInfo *self, SEL selector, long arg1);
+long custom_SBApplicationInfo_backgroundStyleForRequestedBackgroundStyle(SBApplicationInfo *self, SEL selector, long arg1) {
     if ([self.bundleIdentifier isEqualToString:preferencesBundleIdentifier]) {
-        return 4; // like com.apple.mobilesafari
+        return 2; // like com.apple.mobilesafari
     } else {
-        return original_SBApplicationInfo_backgroundStyle(self, selector);
-    }
-}
-
-static BOOL (*original_SBApplicationInfo_canChangeBackgroundStyle)(SBApplicationInfo *self, SEL selector);
-static BOOL custom_SBApplicationInfo_canChangeBackgroundStyle(SBApplicationInfo *self, SEL selector) {
-    if ([self.bundleIdentifier isEqualToString:preferencesBundleIdentifier]) {
-        return YES; // like com.apple.mobilesafari
-    } else {
-        return original_SBApplicationInfo_canChangeBackgroundStyle(self, selector);
-    }
-}
-
-static long (*original_SBApplicationInfo_supportedUserInterfaceStyle)(SBApplicationInfo *self, SEL selector);
-static long custom_SBApplicationInfo_supportedUserInterfaceStyle(SBApplicationInfo *self, SEL selector) {
-    if ([self.bundleIdentifier isEqualToString:preferencesBundleIdentifier]) {
-        return 2;
-    } else {
-        return original_SBApplicationInfo_supportedUserInterfaceStyle(self, selector);
-    }
+        return original_SBApplicationInfo_backgroundStyleForRequestedBackgroundStyle(self, selector, arg1);
+    } 
 }
 
 __attribute__((constructor)) static void init() {
-    LBHookMessage(NSClassFromString(@"SBApplicationInfo"), @selector(backgroundStyle), &custom_SBApplicationInfo_backgroundStyle, &original_SBApplicationInfo_backgroundStyle);
-    LBHookMessage(NSClassFromString(@"SBApplicationInfo"), @selector(canChangeBackgroundStyle), &custom_SBApplicationInfo_canChangeBackgroundStyle, &original_SBApplicationInfo_canChangeBackgroundStyle);
-    LBHookMessage(NSClassFromString(@"SBApplicationInfo"), @selector(supportedUserInterfaceStyle), &custom_SBApplicationInfo_supportedUserInterfaceStyle, &original_SBApplicationInfo_supportedUserInterfaceStyle);
+    @autoreleasepool {
+        MSHookMessageEx(NSClassFromString(@"SBApplicationInfo"), @selector(backgroundStyleForRequestedBackgroundStyle:), (IMP)&custom_SBApplicationInfo_backgroundStyleForRequestedBackgroundStyle, (IMP *)&original_SBApplicationInfo_backgroundStyleForRequestedBackgroundStyle);
+    }
 }

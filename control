@@ -6,4 +6,4 @@ Description: Hello World!
 Maintainer: Jinwoo Kim
 Author: Jinwoo Kim
 Section: Utilities
-Depends: firmware (>= 14.0), mobilesubstrate (>= 0.9.5000)
+Depends: firmware (>= 15.0), mobilesubstrate (>= 0.9.5000)

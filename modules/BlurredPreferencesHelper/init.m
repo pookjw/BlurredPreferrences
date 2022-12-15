@@ -9,7 +9,7 @@
 
 + (UIColor *)bph_clearColor {
     // https://stackoverflow.com/a/11012121/17473716
-    return [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.001f];
+    return [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.01f];
 }
 
 @end
@@ -54,8 +54,8 @@ void custom_UITableViewCell_setBackgroundColor(UITableViewCell *self, SEL select
 __attribute__((constructor)) static void init() {
     @autoreleasepool {
         MSHookMessageEx(UIViewController.class, @selector(viewDidLoad), (IMP)&custom_UIViewController_viewDidLoad, (IMP *)&original_UIViewController_viewDidLoad);
-        MSHookMessageEx(UIViewController.class, @selector(viewWillAppear:), (IMP)&custom_UIViewController_viewWillAppear, (IMP *)&original_UIViewController_viewWillAppear);
-        MSHookMessageEx(UIViewController.class, @selector(viewWillDisappear:), (IMP)&custom_UIViewController_viewWillDisappear, (IMP *)&original_UIViewController_viewWillDisappear);
+        // MSHookMessageEx(UIViewController.class, @selector(viewWillAppear:), (IMP)&custom_UIViewController_viewWillAppear, (IMP *)&original_UIViewController_viewWillAppear);
+        // MSHookMessageEx(UIViewController.class, @selector(viewWillDisappear:), (IMP)&custom_UIViewController_viewWillDisappear, (IMP *)&original_UIViewController_viewWillDisappear);
         MSHookMessageEx(UITableView.class, @selector(setBackgroundColor:), (IMP)&custom_UITableView_setBackgroundColor, (IMP *)&original_UITableView_setBackgroundColor);
         MSHookMessageEx(UITableViewCell.class, @selector(setBackgroundColor:), (IMP)&custom_UITableViewCell_setBackgroundColor, (IMP *)&original_UITableViewCell_setBackgroundColor);
     }

@@ -1,7 +1,7 @@
 Package: com.pookjw.blurredpreferences
 Name: BlurredPreferences
 Version: 1.1
-Architecture: iphoneos-arm
+Architecture: iphoneos-arm64
 Description: Hello World!
 Maintainer: Jinwoo Kim
 Author: Jinwoo Kim

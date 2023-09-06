@@ -96,8 +96,8 @@ void custom_SBDeviceApplicationSceneView_sceneHandleDidUpdateSettingsWithDiff_pr
 
 __attribute__((constructor)) static void init() {
     @autoreleasepool {
-        MSHookMessageEx(NSClassFromString(@"SBDeviceApplicationSceneHandle"), @selector(backgroundStyle), (IMP)&custom_SBDeviceApplicationSceneHandle_backgroundStyle, (IMP *)&original_SBDeviceApplicationSceneHandle_backgroundStyle);
+        MSHookMessageEx(NSClassFromString(@"SBDeviceApplicationSceneHandle"), @selector(backgroundStyle), (IMP)custom_SBDeviceApplicationSceneHandle_backgroundStyle, (IMP *)&original_SBDeviceApplicationSceneHandle_backgroundStyle);
         // MSHookMessageEx(NSClassFromString(@"SBDeviceApplicationSceneHandle"), @selector(isTranslucent), (IMP)&custom_SBDeviceApplicationSceneHandle_isTranslucent, (IMP *)&original_SBDeviceApplicationSceneHandle_isTranslucent);
-        MSHookMessageEx(NSClassFromString(@"SBDeviceApplicationSceneView"), @selector(_sceneHandleDidUpdateSettingsWithDiff:previousSettings:), (IMP)&custom_SBDeviceApplicationSceneView_sceneHandleDidUpdateSettingsWithDiff_previousSettings, (IMP *)&original_SBDeviceApplicationSceneView_sceneHandleDidUpdateSettingsWithDiff_previousSettings);
+        MSHookMessageEx(NSClassFromString(@"SBDeviceApplicationSceneView"), @selector(_sceneHandleDidUpdateSettingsWithDiff:previousSettings:), (IMP)custom_SBDeviceApplicationSceneView_sceneHandleDidUpdateSettingsWithDiff_previousSettings, (IMP *)&original_SBDeviceApplicationSceneView_sceneHandleDidUpdateSettingsWithDiff_previousSettings);
     }
 }

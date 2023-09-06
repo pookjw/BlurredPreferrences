@@ -1,3 +1,6 @@
+TARGET := iphone:clang:latest
+THEOS_PACKAGE_SCHEME = rootless
+
 include $(THEOS)/makefiles/common.mk
 
 SUBPROJECTS += modules/BlurredPreferencesHelper
